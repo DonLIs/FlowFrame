@@ -1,0 +1,82 @@
+apply from: "../module_config_base.gradle"
+
+android {
+
+//    resourcePrefix "base"
+}
+
+kapt {
+    arguments {
+        // ARouter需要配置项
+        arg("AROUTER_MODULE_NAME", project.getName())
+    }
+}
+
+kapt {
+    correctErrorTypes true
+}
+
+dependencies {
+
+    api fileTree(include: ['*.jar'], dir: 'libs')
+
+    api project(path: ":libs:lib_core")
+    api project(path: ":libs:lib_cockroach" )
+
+    api "androidx.multidex:multidex:2.0.1"
+
+    // eventbus
+    api "org.greenrobot:eventbus:3.1.1"
+
+    // rxJava
+    api 'io.reactivex.rxjava2:rxjava:2.2.12'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // okhttp3
+    api "com.squareup.okhttp3:okhttp:4.9.3"
+    api "com.squareup.okhttp3:logging-interceptor:4.9.3"
+
+    // retrofit2
+    api "com.squareup.retrofit2:retrofit:2.9.0"
+    api "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
+    api "com.squareup.retrofit2:converter-gson:2.9.0"
+
+    // 网络请求chrome数据调试
+    api 'com.facebook.stetho:stetho:1.5.1'
+    api 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+
+    // glide
+    api "com.github.bumptech.glide:glide:4.13.2"
+    // glide-webP
+    api "com.zlc.glide:webpdecoder:2.0.4.11.0"
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+
+    // 轮播banner
+    api 'com.github.zhpanvip:BannerViewPager:3.5.4'
+
+    //===================ExoPlayer======================
+    api 'com.google.android.exoplayer:exoplayer-core:2.17.1'
+    api 'com.google.android.exoplayer:exoplayer:2.17.1'
+    api 'com.google.android.exoplayer:exoplayer-ui:2.17.1'
+    api 'com.google.android.exoplayer:exoplayer-dash:2.17.1'
+
+    // 浮动布局
+    api 'com.google.android:flexbox:2.0.1'
+
+    // 内存泄漏检测
+    debugApi 'com.squareup.leakcanary:leakcanary-android:2.9.1'
+
+    // Adapter
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.7'
+    // recyclerview
+    api 'androidx.recyclerview:recyclerview:1.2.1'
+
+    //zxing
+    api 'com.google.zxing:core:3.5.0'
+
+    // UI单位适配
+    api 'me.jessyan:autosize:1.2.1'
+
+    // 文件下载
+    api 'com.liulishuo.filedownloader:library:1.7.7'
+}

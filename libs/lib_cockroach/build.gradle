@@ -1,0 +1,11 @@
+apply from: "../lib_config_base.gradle"
+
+android {
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+
+}
