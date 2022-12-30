@@ -21,6 +21,20 @@ import kotlin.coroutines.CoroutineContext
 
 abstract class SuperViewModel<UiState : IUiState, UiIntent: IUiIntent> : ViewModel() {
 
+    //-------------------State-----------------------
+
+    private val _uiStateFlow: MutableStateFlow<UiState> = MutableStateFlow(initUiState())
+
+    val uiStateFlow: StateFlow<UiState> = _uiStateFlow
+
+    protected abstract fun initUiState(): UiState
+
+    protected fun updateUiState(state: UiState.() -> UiState) {
+        _uiStateFlow.update { state(_uiStateFlow.value) }
+    }
+
+    //-------------------State-----------------------
+
     //-------------------Intent-----------------------
 
     private val _uiIntentFlow: Channel<UiIntent> = Channel()
@@ -45,27 +59,13 @@ abstract class SuperViewModel<UiState : IUiState, UiIntent: IUiIntent> : ViewMod
 
     //-------------------Intent-----------------------
 
-    //-------------------State-----------------------
-
-    private val _uiStateFlow: MutableStateFlow<UiState> = MutableStateFlow(initUiState())
-
-    val uiStateFlow: StateFlow<UiState> = _uiStateFlow
-
-    protected abstract fun initUiState(): UiState
-
-    protected fun updateUiState(state: UiState.() -> UiState) {
-        _uiStateFlow.update { state(_uiStateFlow.value) }
-    }
-
-    //-------------------State-----------------------
-
     //-------------------协程-----------------------
 
-    suspend inline fun collect(
-        crossinline transform: (value: UiState) -> UiState,
-        crossinline action: (value: UiState) -> Unit
+    suspend inline fun <T> collect(
+        crossinline map: (value: UiState) -> T,
+        crossinline callback: (value: T) -> Unit
     ) {
-        uiStateFlow.map(transform).distinctUntilChanged().collect(action)
+        uiStateFlow.map(map).distinctUntilChanged().collect(callback)
     }
 
     /**
@@ -121,9 +121,9 @@ abstract class SuperViewModel<UiState : IUiState, UiIntent: IUiIntent> : ViewMod
                 loading?.showLoadingInMain()
                 val data = request.invoke()
                 if (data.isSuccess()) {
-                    data.getBody()?.let { success?.invoke(it) }
+                    data.data?.let { success?.invoke(it) }
                 } else {
-                    data.getMessage()?.let { failure?.invoke(Throwable(it)) }
+                    data.message?.let { failure?.invoke(Throwable(it)) }
                 }
                 loading?.dismissLoadingInMain()
             } catch (e: Exception) {
